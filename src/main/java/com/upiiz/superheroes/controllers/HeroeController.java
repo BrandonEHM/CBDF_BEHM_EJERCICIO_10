@@ -1,4 +1,4 @@
-package com.upiiz.superheroes.controllers;
+/*package com.upiiz.superheroes.controllers;
 
 import com.upiiz.superheroes.entities.HeroeEntity;
 import com.upiiz.superheroes.services.HeroeService;
@@ -40,5 +40,56 @@ public class HeroeController {
     public ResponseEntity<HeroeEntity> deleteHeroe(@RequestParam Long id){
         heroeService.deleteHeroe(id);
         return ResponseEntity.noContent().build();
+    }
+}*/
+package com.upiiz.superheroes.controllers;
+
+import com.upiiz.superheroes.entities.HeroeEntity;
+import com.upiiz.superheroes.services.HeroeService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/v1/heroes")
+public class HeroeController {
+    @Autowired
+    private HeroeService heroeService;
+
+    // Obtener todos los héroes
+    @GetMapping
+    public ResponseEntity<List<HeroeEntity>> getHeroes() {
+        return ResponseEntity.ok(heroeService.getAllHeroes());
+    }
+
+    // Obtener un héroe por ID
+    @GetMapping("/{id}")
+    public ResponseEntity<HeroeEntity> getHeroeById(@PathVariable Long id) {
+        HeroeEntity heroe = heroeService.getHeroeById(id);
+        return heroe != null ? ResponseEntity.ok(heroe) : ResponseEntity.notFound().build();
+    }
+
+    // Crear un héroe
+    @PostMapping
+    public ResponseEntity<HeroeEntity> createHeroe(@RequestBody HeroeEntity heroe) {
+        return ResponseEntity.ok(heroeService.createHeroe(heroe));
+    }
+
+    // Actualizar un héroe
+    @PutMapping("/{id}")
+    public ResponseEntity<HeroeEntity> updateHeroe(@RequestBody HeroeEntity heroe, @PathVariable Long id) {
+        HeroeEntity updatedHeroe = heroeService.updateHeroe(heroe, id);
+        return updatedHeroe != null ? ResponseEntity.ok(updatedHeroe) : ResponseEntity.notFound().build();
+    }
+
+    // Eliminar un héroe
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteHeroe(@PathVariable Long id) {
+        if (heroeService.deleteHeroe(id)) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 }
